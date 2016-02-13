@@ -1,8 +1,8 @@
-defmodule Scientist.Mixfile do
+defmodule Burner.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :scientist,
+    [app: :burner,
      version: "0.0.1",
      build_path: "../../_build",
      config_path: "../../config/config.exs",
@@ -18,12 +18,10 @@ defmodule Scientist.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger],
-     mod: {Scientist, []}]
+    [applications: [:logger, :scientist]]
   end
 
   defp deps do
-    [{:ex_spec, "~> 1.0.0", only: :test},
-     { :uuid, "~> 1.1" }]
+    [{:scientist, in_umbrella: true}]
   end
 end
