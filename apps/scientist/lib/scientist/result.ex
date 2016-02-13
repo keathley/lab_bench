@@ -17,7 +17,7 @@ defmodule Scientist.Result do
 
   def mismatched?(%Result{observations: observations, control: control}) do
     observations
-    |> Enum.map(fn(observation) -> observation == control end)
+    |> Enum.map(fn(observation) -> observation.value == control.value end)
     |> Enum.all?
   end
 end
