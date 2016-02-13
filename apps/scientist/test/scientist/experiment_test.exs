@@ -14,25 +14,34 @@ defmodule Scientist.ExperimentTest do
     end
   end
 
-  describe "control/2" do
-    it "assigns a control function to the experiment" do
-      result =
-        experiment("Test experiment")
-        |> control(fn -> IO.puts "Hello world" end)
+  # describe "control/2" do
+  #   it "assigns a control function to the experiment" do
+  #     result =
+  #       experiment("Test experiment")
+  #       |> control(fn -> IO.puts "Hello world" end)
+  #
+  #     assert result.control
+  #   end
+  # end
 
-      assert result.control
-    end
-  end
-
-  describe "candidate/2" do
-    it "assigns a candidate to the experiment" do
-      result =
-        experiment("Test")
-        |> candidate(fn -> IO.puts "Hello world" end)
-
-      assert result.candidate
-    end
-  end
+  # describe "candidate/2" do
+  #   it "assigns a candidate to the experiment" do
+  #     result =
+  #       experiment("Test")
+  #       |> candidate(fn -> IO.puts "Hello world" end)
+  #
+  #     assert result.candidate
+  #   end
+  #
+  #   # it "allows multiple candidates to be assigned" do
+  #   #   result =
+  #   #     experiment("Test")
+  #   #     |> candidate(fn -> 1 end)
+  #   #     |> candidate(fn -> 1 end)
+  #   #
+  #   #   assert Enum.count(result.candidates) == 2
+  #   # end
+  # end
 
   describe "run/1" do
     it "yields the controls result" do

@@ -1,11 +1,15 @@
 defmodule Scientist.Experiment do
-  defstruct name: "", uuid: nil, control: nil, candidate: nil
+  defstruct name: "", uuid: nil, behaviors: []
+
+  alias __MODULE__
+  alias Scientist.Observation
+  alias Scientist.Result
 
   @doc """
   Generates a new experiment struct
   """
   def experiment(title) do
-    %Scientist.Experiment{ name: title, uuid: uuid }
+    %Experiment{ name: title, uuid: uuid }
   end
 
   @doc """
@@ -13,7 +17,7 @@ defmodule Scientist.Experiment do
   Controls should be wrapped in a function in order to be lazily-evaluated
   """
   def control(experiment, thunk) when is_function(thunk) do
-    %Scientist.Experiment{ experiment | control: thunk }
+    add_behavior(experiment, :control, thunk)
   end
 
   @doc """
@@ -23,7 +27,7 @@ defmodule Scientist.Experiment do
   control.
   """
   def candidate(experiment, thunk) when is_function(thunk) do
-    %Scientist.Experiment{ experiment | candidate: thunk }
+    add_behavior(experiment, :candidate, thunk)
   end
 
   @doc """
@@ -35,34 +39,51 @@ defmodule Scientist.Experiment do
   `candidate` and the `control` are executed concurrently. The execution order is
   randomized to account for any ordering issues.
   """
-  def run(exp=%Scientist.Experiment{candidate: candidate, control: control}) when is_function(control) do
-    [{:candidate, candidate}, {:control, control}]
-    |> Enum.shuffle
-    |> Enum.reject(fn({_, func}) -> func == nil end)
-    |> Enum.map(fn({c, func}) -> {c, async(func)} end)
-    |> Enum.map(fn({c, task}) -> {c, await(task)} end)
-    |> Enum.find(fn({c, _}) -> c == :control end)
-    |> elem(1)
+  def run(experiment=%Experiment{}) do
+    experiment
+    |> gather_result
+    |> Result.publish
+    |> Result.control_value
   end
 
-  @doc """
-  Runs the function asynchronously
-  """
+  defp gather_result(experiment) do
+    observations =
+      experiment.behaviors
+      |> Enum.shuffle
+      |> Enum.map(&(fn -> Observation.run(&1) end))
+      |> Enum.map(&async/1)
+      |> Enum.map(&await/1)
+
+    control =
+      observations
+      |> Enum.find(fn({c, _}) -> c == :control end)
+      |> elem(1)
+
+    candidates =
+      observations
+      |> List.delete(control)
+
+    %Scientist.Result{
+      experiment: experiment,
+      control: control,
+      observations: candidates
+    }
+  end
+
+  defp add_behavior(exp, type, thunk) do
+    behaviors = exp.behaviors ++ [{type, thunk}]
+    %Experiment{exp | behaviors: behaviors}
+  end
+
+  defp uuid do
+    UUID.uuid1()
+  end
+
   defp async(func) do
     Task.Supervisor.async(Scientist.TaskSupervisor, func)
   end
 
-  @doc """
-  Waits for the function to complete
-  """
   defp await(thunk) do
     Task.await(thunk)
-  end
-
-  @doc """
-  Generates a unique id
-  """
-  defp uuid do
-    UUID.uuid1()
   end
 end

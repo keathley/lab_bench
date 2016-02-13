@@ -4,6 +4,7 @@ defmodule Scientist do
   """
 
   use Application
+  require Logger
 
   @doc """
   Start Scientist.
@@ -17,9 +18,5 @@ defmodule Scientist do
   """
   def stop(_) do
     # Do nothing for now
-  end
-
-  def publish(result) do
-    Logger.info result
   end
 end
