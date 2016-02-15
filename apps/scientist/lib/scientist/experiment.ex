@@ -4,6 +4,7 @@ defmodule Scientist.Experiment do
   alias __MODULE__
   alias Scientist.Observation
   alias Scientist.Result
+  alias Scientist.Publisher
 
   @doc """
   Generates a new experiment struct
@@ -42,7 +43,7 @@ defmodule Scientist.Experiment do
   def run(experiment=%Experiment{}) do
     experiment
     |> gather_result
-    |> Result.publish
+    |> Publisher.publish
     |> Result.control_value
   end
 

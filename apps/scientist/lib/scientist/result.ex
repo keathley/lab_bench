@@ -3,10 +3,6 @@ defmodule Scientist.Result do
 
   alias Scientist.Result
 
-  def publish(result) do
-    result
-  end
-
   def control_value(%Result{control: control}) do
     control.value
   end
@@ -15,6 +11,7 @@ defmodule Scientist.Result do
     control.duration
   end
 
+  # TODO: This should pull a comparator off of the experiment
   def mismatched?(%Result{observations: observations, control: control}) do
     observations
     |> Enum.map(fn(observation) -> observation.value == control.value end)
