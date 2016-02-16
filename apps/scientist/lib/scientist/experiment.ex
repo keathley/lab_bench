@@ -1,5 +1,5 @@
 defmodule Scientist.Experiment do
-  defstruct name: "", uuid: nil, behaviors: []
+  defstruct name: "", uuid: nil, behaviors: [], compare: nil
 
   alias __MODULE__
   alias Scientist.Observation
@@ -10,7 +10,8 @@ defmodule Scientist.Experiment do
   Generates a new experiment struct
   """
   def experiment(title) do
-    %Experiment{ name: title, uuid: uuid }
+    %Experiment{name: title, uuid: uuid}
+    |> comparator(fn(a, b) -> a == b end)
   end
 
   @doc """
@@ -29,6 +30,17 @@ defmodule Scientist.Experiment do
   """
   def candidate(experiment, thunk) when is_function(thunk) do
     add_behavior(experiment, :candidate, thunk)
+  end
+
+  @doc """
+  Adds a comparator to use when comparing the candidate to the control.
+  By default the comparator is:
+  ``` elixir
+  fn(control, candidate) -> control == candidate end
+  ```
+  """
+  def comparator(experiment, thunk) when is_function(thunk) do
+    %Experiment{experiment | compare: thunk}
   end
 
   @doc """

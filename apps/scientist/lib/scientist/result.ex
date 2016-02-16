@@ -11,10 +11,9 @@ defmodule Scientist.Result do
     control.duration
   end
 
-  # TODO: This should pull a comparator off of the experiment
-  def mismatched?(%Result{observations: observations, control: control}) do
+  def mismatched?(%Result{experiment: exp, observations: observations, control: control}) do
     observations
-    |> Enum.map(fn(observation) -> observation.value == control.value end)
+    |> Enum.map(fn(observation) -> exp.compare.(control, observation) end)
     |> Enum.all?
   end
 end

@@ -1,4 +1,4 @@
 defmodule ScientistTest do
-  use ExSpec, async: true
+  use ExUnit.Case
   doctest Scientist
 end
