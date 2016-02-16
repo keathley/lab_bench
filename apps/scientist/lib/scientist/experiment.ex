@@ -63,7 +63,7 @@ defmodule Scientist.Experiment do
     observations =
       experiment.behaviors
       |> Enum.shuffle
-      |> Enum.map(&(fn -> Observation.run(&1) end))
+      |> Enum.map(&(fn -> Observation.run(&1) end)) # lazily evaluate
       |> Enum.map(&async/1)
       |> Enum.map(&await/1)
 
