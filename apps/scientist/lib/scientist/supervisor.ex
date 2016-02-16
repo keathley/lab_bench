@@ -13,7 +13,8 @@ defmodule Scientist.Supervisor do
 
   def init({:ok}) do
     children = [
-      supervisor(Task.Supervisor, [[name: @task_supervisor]])
+      supervisor(Task.Supervisor, [[name: @task_supervisor]]),
+      worker(Scientist.Publisher, [Scientist.Publisher])
     ]
 
     supervise(children, strategy: :one_for_one)

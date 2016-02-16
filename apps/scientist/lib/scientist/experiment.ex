@@ -74,7 +74,8 @@ defmodule Scientist.Experiment do
 
     candidates =
       observations
-      |> List.delete(control)
+      |> Keyword.delete(:control)
+      |> Enum.map(fn(a) -> elem(a, 1) end)
 
     %Scientist.Result{
       experiment: experiment,

@@ -1,10 +1,10 @@
 defmodule Burner do
-  import Burner.Scientist
+  import Scientist.Experiment
 
   def foo do
-    # experiment("foo expriment")
-    # |> control(fn -> 3 + 5 end)
-    # |> candidate(fn -> 3 + 10 + 4 end)
-    # |> run
+    experiment("foo expriment")
+    |> control(fn -> 3 + 5 end)
+    |> candidate(fn -> 3 + 10 + 4 end)
+    |> run
   end
 end

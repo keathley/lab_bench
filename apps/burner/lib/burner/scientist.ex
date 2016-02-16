@@ -1,3 +1,7 @@
 defmodule Burner.Scientist do
-  # use Scientist
+  require Logger
+
+  def publish(result) do
+    Logger.debug "This is the result: #{result}"
+  end
 end

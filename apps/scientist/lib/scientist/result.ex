@@ -13,7 +13,7 @@ defmodule Scientist.Result do
 
   def mismatched?(%Result{experiment: exp, observations: observations, control: control}) do
     observations
-    |> Enum.map(fn(observation) -> exp.compare.(control, observation) end)
+    |> Enum.map(fn(observation) -> !exp.compare.(control, observation) end)
     |> Enum.all?
   end
 end
@@ -24,8 +24,12 @@ defimpl String.Chars, for: Scientist.Result do
   def to_string(result) do
     value = result.control.value
     duration = result.control.duration
+    [candidate | _] = result.observations
     """
-    Control results - value: #{value} | duration: #{duration}
+    Test: #{result.experiment.name}
+    Mismatch?: #{Result.mismatched?(result)}
+    Control - value: #{value} | duration: #{duration}
+    Candidate - value: #{candidate.value} | duration: #{candidate.duration}
     """
   end
 end
